@@ -1,8 +1,6 @@
-package Week7_Complete.TreePackage.BinarySearchTree;
+package TreePackage;
 
-import Week7_Complete.TreePackage.BinaryNode;
-import Week7_Complete.TreePackage.BinaryTree;
-import Week7_Complete.TreePackage.BinaryTreeInterface;
+import java.util.ArrayList;
 
 public class BinarySearchTree<T extends Comparable<? super T>>
         extends BinaryTree<T> implements SearchTreeInterface<T>
@@ -222,4 +220,28 @@ public class BinarySearchTree<T extends Comparable<? super T>>
             item = entry;
         } // end set
     } // end ReturnObject
+
+
+    public void balanceBST() {
+        ArrayList<T> list = new ArrayList<T>();
+        sort(list, this.getRootNode());
+        setRootNode(balanceTree(list, 0, list.size() - 1));
+    }
+
+    public void sort(ArrayList<T> list, BinaryNode<T> root){
+        if(root == null){ return;}
+        sort(list, root.getLeftChild());
+        list.add(root.getData());
+        sort(list, root.getRightChild());
+        return;
+    }
+
+    public BinaryNode<T> balanceTree(ArrayList<T> list, int beg, int end){
+        if(beg > end){return null;}
+        int mid = beg + (end - beg) / 2;
+        BinaryNode<T> node = new BinaryNode<T>(list.get(mid));
+        node.setLeftChild(balanceTree(list, beg, mid -1));
+        node.setRightChild(balanceTree(list, mid + 1, end));
+        return node;
+    }
 } // end BinarySearchTree
