@@ -1,6 +1,12 @@
 package TreePackage;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+/**
+ * {@inheritDoc}
+ */
 
 public class BinarySearchTree<T extends Comparable<? super T>>
         extends BinaryTree<T> implements SearchTreeInterface<T>
@@ -221,27 +227,41 @@ public class BinarySearchTree<T extends Comparable<? super T>>
         } // end set
     } // end ReturnObject
 
-
+    //set of recursive functions to balance an existing tree
     public void balanceBST() {
+        //create a list of all node values and sort it
         ArrayList<T> list = new ArrayList<T>();
-        sort(list, this.getRootNode());
+        transfer(list, this.getRootNode());
+        Collections.sort(list);
+
+        //call recursive balance function
         setRootNode(balanceTree(list, 0, list.size() - 1));
     }
 
-    public void sort(ArrayList<T> list, BinaryNode<T> root){
+    private void transfer(ArrayList<T> list, BinaryNode<T> root){
+        //recursion ends at null value
         if(root == null){ return;}
-        sort(list, root.getLeftChild());
+
+        //inorder traversal
+        transfer(list, root.getLeftChild());
         list.add(root.getData());
-        sort(list, root.getRightChild());
-        return;
+        transfer(list, root.getRightChild());
     }
 
-    public BinaryNode<T> balanceTree(ArrayList<T> list, int beg, int end){
+    private BinaryNode<T> balanceTree(ArrayList<T> list, int beg, int end){
+        //ends recursion when all values have been added
         if(beg > end){return null;}
+
+        //calculate the middle of left and right halves of the list
         int mid = beg + (end - beg) / 2;
+
+        //add node from the middle of each half of list
         BinaryNode<T> node = new BinaryNode<T>(list.get(mid));
+
+        //continue with each half of list, shortening each index by one
         node.setLeftChild(balanceTree(list, beg, mid -1));
         node.setRightChild(balanceTree(list, mid + 1, end));
+
         return node;
     }
 } // end BinarySearchTree
